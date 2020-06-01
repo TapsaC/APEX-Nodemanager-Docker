@@ -1,38 +1,38 @@
-version: '3.2'
+version: '2.3'
+
+volumes:
+  nodemanager-volume:
+  mongodb-volume:
 
 services:
 
   nodemanager:
     build:
-      context: manager/app
+      context: app
       args:
         GRADLE_VERSION: "4.10.3"
         APP_PORT: 9100
     image: nodemanager
     container_name: nodemanager
+    volumes:
+      - nodemanager-volume:/root
     ports:
       - 9100:9100
       - 9090:9090
     networks:
       - mongodb
-    deploy:
-      resources:
-        limits:
-          cpus: '8'
-          memory: 12000M
+    mem_limit: 12000m
 
   mongodb:
     image: mongo
     container_name: mongo-db-container
+    volumes:
+      - mongodb-volume:/data/db
     expose:
       - 27017
     networks:
       - mongodb
-    deploy:
-      resources:
-        limits:
-          cpus: '4'
-          memory: 4000M
+    mem_limit: 4000m
 
 networks:
   mongodb:
